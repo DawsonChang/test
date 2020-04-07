@@ -1,5 +1,5 @@
 # Environmental Task
-#### Report
+### Report
 
 ##### To complete the Environmental Task we have decided to use pygame package as, at least for us, this is the most intuitive program from the ones available.
 
