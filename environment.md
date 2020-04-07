@@ -1,5 +1,5 @@
-Environmental Task
-Report
+# Environmental Task
+#### Report
 
 To complete the Environmental Task we have decided to use pygame package as, at least for us, this is the most intuitive program from the ones available.
 Our team (Martyna Drumińska, Weronika Skowrońska, Przemysław Andrzejewski, and Tao-Sen Chang) has chosen the Waiter Project, and therefore our grid is adjusted to such kind of task.
