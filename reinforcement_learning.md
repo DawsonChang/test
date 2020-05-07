@@ -14,11 +14,11 @@ https://www.samyzaf.com/ML/rl/qmaze.html
 ```
 if rat_row == win_target_x and rat_col == win_target_y:
     return 1.0
-if mode == 'blocked':  #
+if mode == 'blocked':   # move to the block in the grid
     return self.min_reward - 1
 if (rat_row, rat_col) in self.visited:
     return -10.0/256.0    
-if mode == 'invalid':
+if mode == 'invalid': # move to the boundary
     return -4.0/16.0    
 if mode == 'valid':
     return -2.5/256.0
