@@ -7,7 +7,7 @@
 ##### Reinforcement learning is how software agents ought to take actions in an environment in order to maximize the notion of cumulative reward. The agent makes a sequence of decisions, and learn to perform best actions every step. For example, in my project there is a waiter in the grid and he have to reach many tables for serving the meal, so he must learn the shortest path to get a table.
 
 ## How to do that?
-##### The idea of how to complete the reinforcement learning is not quite easy. However, there is an example - rat in a maze. Instead of writing the whole codes at beginning, I use the existing codes(tools) by adjusting some parameters to train the agent on our 16x16 grid.
+##### The idea of how to complete the reinforcement learning is not quite easy. However, there is an example - rat in a maze. Instead of writing the whole algorithm at beginning, I use the existing codes(tools) by adjusting some parameters to train the agent on our 16x16 grid.
 https://www.samyzaf.com/ML/rl/qmaze.html
 ##### I train the agent(waiter) with rewards and penalties, the waiter in the above grid gets a small penalty for every legal move. The reason is that we want it to get to the target table in the shortest possible path. However, the shortest path to the target table is sometimes long and winding, and our agent (the waiter) may have to endure many errors until he gets to the table.
 ##### For example, one of the training parameters(rewards) is:
