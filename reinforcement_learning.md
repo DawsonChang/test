@@ -30,9 +30,9 @@ if (rat_row, rat_col) in self.curr_win_targets: # if reach any table
 ##### Q(s,a) = the maximum total reward we can get by choosing action a in state s
 ##### Hence it's obvious that we get the function π(s)=argmaxQ(s,ai)
 ##### Now the question is how to get Q(s,a)?
-##### There is a solution called Bellman's Equation:
-##### Q(s,a) = R(s,a) + maxQ(s′,ai)
-##### R(s,a) is the reward in current state s, action a. And s′ means the next state, so maxQ(s′,ai) means the maximum reward made by 1 of 4 actions from next state - it's a recursive property. In the code we have the Experience Class to memorize each "episode", but the memory is limited, therefore if reach the max_memory, then delete the old episode.
+##### There is a solution called Bellman's Equation: Q(s,a) = R(s,a) + maxQ(s′,ai)
+##### R(s,a) is the reward in current state s, action a. And s′ means the next state, so maxQ(s′,ai) means the maximum reward in 4 actions from next state. In the code we have the Experience Class to memorize each "episode", but the memory is limited, therefore if reach the max_memory, then delete the old episode which has lower effect to current episode.
+##### There is a coefficient called discount factor, usually denoted by γ which is required for the Bellman equation for stochastic environments. So the new Bellman's Equation can be written as Q(s,a) = R(s,a) + γ * maxQ(s′,ai). This discount factor is to diminish the effects which are far from current state.
 ```
 class Experience(object):
     def __init__(self, model, max_memory=100, discount=0.95):
@@ -73,3 +73,6 @@ class Experience(object):
                 targets[i, action] = reward + self.discount * Q_sa
         return inputs, targets
 ```
+
+## Training
+##### 
