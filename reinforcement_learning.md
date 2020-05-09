@@ -76,7 +76,7 @@ class Experience(object):
 ```
 
 ## Training
-##### We prepare a method called "qtrain" which trains the agent in a loop. One epoch means one loop of the training, and in each epoch the agent will finally become either "win" or "lose". 
+##### Next, there is a method called "qtrain" which trains the agent in a loop. One epoch means one loop of the training, and in each epoch the agent will finally become either "win" or "lose". 
 ##### Another coefficient "epsilon" is exploration factor which decides the probability of whether the agent will perform new actions instead of following the previous experiences (which is called exploitation). By this way the agent could not only collect better rewards from previous experiences, but also have the chances to explore unknow area where might get more rewards. If one of the strategy is determined, then let's start training it by neural network. (inputs: size equals to the maze size, targets: size is the same as the number of actions (4 in our case)).
 ```
 # Exploration factor
