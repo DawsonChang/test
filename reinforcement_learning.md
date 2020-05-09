@@ -25,6 +25,9 @@ if mode == 'valid': # to make the route shorter, we give a penalty by moving to 
 if (rat_row, rat_col) in self.curr_win_targets: # if reach any table
     return 1.0
 ```
+```
+self.min_reward = -0.5 * self.maze.size
+```
 ## Q-learning
 ##### We want to get the maximum reward from each action in a state. Here defines action=π(s).
 ##### Q(s,a) = the maximum total reward we can get by choosing action a in state s. Hence it's obvious that we get the function π(s)=argmaxQ(s,ai)   Now the question is how to get Q(s,a)?
@@ -73,4 +76,107 @@ class Experience(object):
 ```
 
 ## Training
-##### 
+##### We prepare a method called "qtrain" which trains the agent in a loop. One epoch means one loop of the training, and in each epoch the agent will finally become either "win" or "lose". 
+##### Another coefficient "epsilon" is exploration factor which decides the probability of whether the agent will perform new actions instead of following the previous experiences (which is called exploitation). By this way the agent could not only collect better rewards from previous experiences, but also have the chances to explore unknow area where might get more rewards. If one of the strategy is determined, then let's start training it by neural network. (inputs: size equals to the maze size, targets: size is the same as the number of actions (4 in our case)).
+```
+# Exploration factor
+epsilon = 0.1
+def qtrain(model, maze, **opt):
+    global epsilon
+    n_epoch = opt.get('n_epoch', 15000)
+    max_memory = opt.get('max_memory', 1000)
+    data_size = opt.get('data_size', 50)
+    weights_file = opt.get('weights_file', "")
+    name = opt.get('name', 'model')
+    start_time = datetime.datetime.now()
+
+    # If you want to continue training from a previous model,
+    # just supply the h5 file name to weights_file option
+    if weights_file:
+        print("loading weights from file: %s" % (weights_file,))
+        model.load_weights(weights_file)
+
+    # Construct environment/game from numpy array: maze (see above)
+    qmaze = Qmaze(maze)
+
+    # Initialize experience replay object
+    experience = Experience(model, max_memory=max_memory)
+
+    win_history = []   # history of win/lose game
+    n_free_cells = len(qmaze.free_cells)
+    hsize = qmaze.maze.size//2   # history window size
+    win_rate = 0.0
+    imctr = 1
+    pre_episodes = 2**31 - 1
+
+    for epoch in range(n_epoch):
+        loss = 0.0
+        #rat_cell = random.choice(qmaze.free_cells)
+        #rat_cell = (0, 0)
+        rat_cell = (12, 12)
+
+        qmaze.reset(rat_cell)
+        game_over = False
+
+        # get initial envstate (1d flattened canvas)
+        envstate = qmaze.observe()
+
+        n_episodes = 0
+        while not game_over:
+            valid_actions = qmaze.valid_actions()
+            if not valid_actions: break
+            prev_envstate = envstate
+            # Get next action
+            if np.random.rand() < epsilon:
+                action = random.choice(valid_actions)
+            else:
+                action = np.argmax(experience.predict(prev_envstate))
+
+            # Apply action, get reward and new envstate
+            envstate, reward, game_status = qmaze.act(action)
+            if game_status == 'win':
+                print("win")
+                win_history.append(1)
+                game_over = True
+                # save_pic(qmaze)
+                if n_episodes <= pre_episodes:
+                    # output_route(qmaze)
+                    print(qmaze.visited)
+                    with open('res.data', 'wb') as filehandle:
+                        pickle.dump(qmaze.visited, filehandle)
+                    pre_episodes = n_episodes
+                    
+            elif game_status == 'lose':
+                print("lose")
+                win_history.append(0)
+                game_over = True
+                # save_pic(qmaze)
+            else:
+                game_over = False
+
+            # Store episode (experience)
+            episode = [prev_envstate, action, reward, envstate, game_over]
+            experience.remember(episode)
+            n_episodes += 1
+
+            # Train neural network model
+            inputs, targets = experience.get_data(data_size=data_size)
+            h = model.fit(
+                inputs,
+                targets,
+                epochs=8,
+                batch_size=16,
+                verbose=0,
+            )
+            loss = model.evaluate(inputs, targets, verbose=0)
+            
+        
+        if len(win_history) > hsize:
+            win_rate = sum(win_history[-hsize:]) / hsize
+    
+        dt = datetime.datetime.now() - start_time
+        t = format_time(dt.total_seconds())
+        
+        template = "Epoch: {:03d}/{:d} | Loss: {:.4f} | Episodes: {:d} | Win count: {:d} | Win rate: {:.3f} | time: {}"
+        print(template.format(epoch, n_epoch-1, loss, n_episodes, sum(win_history), win_rate, t))
+```
