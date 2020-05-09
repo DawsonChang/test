@@ -182,3 +182,20 @@ def qtrain(model, maze, **opt):
 ```
 
 ## Testing
+##### Use this algorithm to our 16x16 grids 
+```
+grid = [[1 for x in range(16)] for y in range(16)]
+table1 = Table(2, 2)
+table2 = Table (2,7)
+table3 = Table(2, 12)
+table4 = Table(7, 2)
+table5 = Table(7, 7)
+table6 = Table(7, 12)
+table7 = Table(12, 2)
+table8 = Table(12, 7)
+
+kitchen = Kitchen(13, 13)
+maze = np.array(grid)
+model = build_model(maze)
+qtrain(model, maze, epochs=1000, max_memory=8*maze.size, data_size=32)
+```
