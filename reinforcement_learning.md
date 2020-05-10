@@ -229,3 +229,7 @@ Epoch: 460/14999 | Loss: 0.0236 | Episodes: 60 | Win count: 401 | Win rate: 1.00
 Reached 100% win rate at epoch: 460
 n_epoch: 460, max_mem: 2048, data: 32, time: 1.48 hours
 ```
+##### In my opinion, there are 3 reasons cause such bad results.
+##### 1. The parameters in the algorithm are not optimal including the rewards, exploration rate, and discount factor. To adjust the parameters and to validate them costs lots of time, and the most intuitive way is always not the best solution. For example, the parameters of 4 targets are fine, but if the number of targets expanded to 8, the parameters are not just 1/2 of the original ones.
+##### 2. Beacuse of the exploration rate, every time the same training and testing data may have different result. It increases the difficulty to verify our result. Only way to check whether the parameters generate ideal results is training continuously until we collect sufficient data.
+##### 3. The algorithm is for a rat in a maze at beginning, and the number of default target is only one. If we apply it for multiple targets, there may be inadequate for some reason. Moreover, the default size is 7x7 grid. It is possible that the 16x16 grid is too huge for this algorithm.
