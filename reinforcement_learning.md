@@ -76,7 +76,7 @@ class Experience(object):
 ```
 
 ## Training
-##### Following is the algorithm for training neural network model to solve the maze. One epoch means one loop of the training, and in each epoch the agent will finally become either "win" or "lose". 
+##### Following is the algorithm for training neural network model to solve the problem. One epoch means one loop of the training, and in each epoch the agent will finally become either "win" or "lose". 
 ##### Another coefficient "epsilon" is exploration factor which decides the probability of whether the agent will perform new actions instead of following the previous experiences (which is called exploitation). By this way the agent could not only collect better rewards from previous experiences, but also have the chances to explore unknow area where might get more rewards. If one of the strategy is determined, then let's start training it by neural network. (inputs: size equals to the maze size, targets: size is the same as the number of actions (4 in our case)).
 ```
 # Exploration factor
@@ -182,7 +182,7 @@ def qtrain(model, maze, **opt):
 ```
 
 ## Testing
-##### Use this algorithm to our 16x16 grids 
+##### Use this algorithm to our 16x16 grid and train.
 ```
 grid = [[1 for x in range(16)] for y in range(16)]
 table1 = Table(2, 2)
@@ -198,4 +198,34 @@ kitchen = Kitchen(13, 13)
 maze = np.array(grid)
 model = build_model(maze)
 qtrain(model, maze, epochs=1000, max_memory=8*maze.size, data_size=32)
+```
+##### Also I create a list called win_targets to put the position of tables in the grid.
+```
+win_targets = [(4, 4),(4, 9),(4, 14),(9, 4),(9, 9),(9, 14),(14, 4),(14, 9)]
+```
+##### After tons of trainings, I realize it is not an easy task to obtain the shortest route in every training - that means most of the trainings are failed - especially in the case that the win_targets has more targets. For example, the result of training 8 targets is like this(part of result):
+```
+...
+Epoch: 167/14999 | Loss: 0.0299 | Episodes: 407 | Win count: 63 | Win rate: 0.422 | time: 2.44 hours
+Epoch: 168/14999 | Loss: 0.0112 | Episodes: 650 | Win count: 63 | Win rate: 0.414 | time: 2.46 hours
+Epoch: 169/14999 | Loss: 0.0147 | Episodes: 392 | Win count: 64 | Win rate: 0.422 | time: 2.47 hours
+Epoch: 170/14999 | Loss: 0.0112 | Episodes: 668 | Win count: 65 | Win rate: 0.422 | time: 2.48 hours
+Epoch: 171/14999 | Loss: 0.0101 | Episodes: 487 | Win count: 66 | Win rate: 0.430 | time: 2.50 hours
+Epoch: 172/14999 | Loss: 0.0121 | Episodes: 362 | Win count: 67 | Win rate: 0.438 | time: 2.51 hours
+Epoch: 173/14999 | Loss: 0.0101 | Episodes: 484 | Win count: 68 | Win rate: 0.445 | time: 2.52 hours
+...
+```
+##### The only one which is successful contains 4 targets(win_targets = [(4, 4),(4, 9),(4, 14),(9, 4)]) 
+```
+...
+Epoch: 223/14999 | Loss: 0.0228 | Episodes: 30 | Win count: 165 | Win rate: 0.906 | time: 64.02 minutes
+Epoch: 224/14999 | Loss: 0.0160 | Episodes: 52 | Win count: 166 | Win rate: 0.906 | time: 64.09 minutes
+Epoch: 225/14999 | Loss: 0.0702 | Episodes: 34 | Win count: 167 | Win rate: 0.914 | time: 64.14 minutes
+Epoch: 226/14999 | Loss: 0.0175 | Episodes: 40 | Win count: 168 | Win rate: 0.922 | time: 64.19 minutes
+Epoch: 227/14999 | Loss: 0.0271 | Episodes: 46 | Win count: 169 | Win rate: 0.930 | time: 64.25 minutes
+Epoch: 228/14999 | Loss: 0.0194 | Episodes: 40 | Win count: 170 | Win rate: 0.938 | time: 64.30 minutes
+...
+Epoch: 460/14999 | Loss: 0.0236 | Episodes: 60 | Win count: 401 | Win rate: 1.000 | time: 1.48 hours
+Reached 100% win rate at epoch: 460
+n_epoch: 460, max_mem: 2048, data: 32, time: 1.48 hours
 ```
